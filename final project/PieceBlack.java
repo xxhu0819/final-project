@@ -7,7 +7,7 @@ public class PieceBlack extends Piece {
 	}
 	
 	public String toString() {
-		return "●";
+		return "x";
 	}
 	
 }

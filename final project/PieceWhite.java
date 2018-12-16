@@ -7,6 +7,6 @@ public class PieceWhite extends Piece {
 	
 	
 	public String toString() {
-		return "○";
+		return "o";
 	}
 }
