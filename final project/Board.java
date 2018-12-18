@@ -1,130 +1,139 @@
 
 public class Board {
 
-	private Piece[][] pieces = new Piece[15][15];
+	private final int SIZE = 15;
+	private Piece[][] pieces = new Piece[SIZE][SIZE];
+	public int count = 0;
 
 	public Board() {
-		for (int q = 0; q < 15; q ++) {
-			for (int w = 0; w < 15; w ++) {
-				pieces[q][w] = new Piece();
+		for (int x = 0; x < SIZE; x ++) {
+			for (int y = 0; y < SIZE; y ++) {
+				pieces[x][y] = new Piece();
 			}
 		}
 	}
-
 
 	public void drawBoard() {
-		int j = 0;
-		String number = j + "";
 
-		for (j = 1; j < 16; j ++) {
-			number = j + "";
-			number = String.format("%-3s",number);
-			System.out.print(number);
-		}
-		System.out.println();
+	    for (int y = 1; y <= SIZE; y ++) {
+	        System.out.print(String.format("%-3s", ""+y));
+	    }
+	    
+	    System.out.println();
 
-		for (int y = 0; y < 15; y ++) {
-			for (int x = 0; x < 15; x ++) {
-				System.out.print(String.format("%-3s",pieces[y][x]));
-			}
-			System.out.print((char)('@' + (y + 1)));//turn integer value into letter
-			System.out.println();
-		}
-	}
-
-
-	public void updateBlackPiece(int x, int y, int count) {
-		if (count == 0) {
-			pieces[x][y] = new PieceWhite();
-		} else {
-			pieces[x][y] = new PieceBlack();
-		}
-
+	    for (int x = 0; x < SIZE; x ++) {
+	        for (int y = 0; y < SIZE; y ++) 
+	            System.out.print(String.format("%-3s",pieces[x][y]));
+	        System.out.print((char)('A' + x));//convert integer value to char
+	        System.out.println();
+	    }
 	}
 
 	public Piece getPiece(int x, int y) {
 		return pieces[x][y];
 	}
 
-	public boolean win(int x, int y) {
-		int reference = pieces[x][y].getColor();
-		for(int i = 0; i<11; i++) {
-			if (pieces[x][i].getColor() == reference && pieces[x][i + 1].getColor() == reference &&
-					pieces[x][i + 2].getColor() == reference && pieces[x][i + 3].getColor() == reference && 
-					pieces[x][i + 4].getColor() == reference) {
-				return true;
-			}
+
+	public boolean isFinish(){
+		return count == SIZE * SIZE;
+	}
+	
+	
+	public void updatePiece(int x, int y, boolean black) {
+		if (black) {
+			pieces[x][y] = new PieceBlack();
+		} else {
+			pieces[x][y] = new PieceWhite();
 		}
-		for(int i = 0; i<11; i++) {
-			if (pieces[i][y].getColor() == reference && pieces[i + 1][y].getColor() == reference &&
-					pieces[i + 2][y].getColor() == reference && pieces[i + 3][y].getColor() == reference && 
-					pieces[i + 4][y].getColor() == reference) {
-				return true;
-			}
-		}
-//
-//		if (x<=y) {
-//			y = y-x;
-//			x = 0;
-//		}
-//		while (y <11) {
-//			if (pieces[x][y].getColor() == reference && pieces[x+1][y+1].getColor() == reference &&
-//					pieces[x+2][y+2].getColor() == reference && pieces[x+3][y+3].getColor() == reference && 
-//					pieces[x+4][y+4].getColor() == reference) {
-//				return true;
-//			}
-//			y++;
-//		}
-//
-//		if (x>=y) {
-//			x = x-y;
-//			y = 0;
-//		}
-//		while (x < 11) {
-//			if (pieces[x][y].getColor() == reference && pieces[x+1][y+1].getColor() == reference &&
-//					pieces[x+2][y+2].getColor() == reference && pieces[x+3][y+3].getColor() == reference && 
-//					pieces[x+4][y+4].getColor() == reference) {
-//				return true;
-//			}
-//			x++;
-//		}
-//
-//
-//		int a = 14 - x;
-//		if (a<=y) {
-//			x=14;
-//			y = y-a;
-//		}
-//		while (y < 11) {
-//			if (pieces[x][y].getColor() == reference && pieces[x-1][y+1].getColor() == reference &&
-//					pieces[x-2][y+2].getColor() == reference && pieces[x-3][y+3].getColor() == reference && 
-//					pieces[x-4][y+4].getColor() == reference) {
-//				return true;
-//			}
-//			x--;
-//			y++;
-//		}
-//
-//		a = 14 - x;
-//		if (a>=y) {
-//			x=x+a;
-//			y = 0;
-//		}
-//		while (x >3) {
-//			if (pieces[x][y].getColor() == reference && pieces[x-1][y+1].getColor() == reference &&
-//					pieces[x-2][y+2].getColor() == reference && pieces[x-3][y+3].getColor() == reference && 
-//					pieces[x-4][y+4].getColor() == reference) {
-//				return true;
-//			}
-//			x--;
-//			y++;
-//		}
-
-
-
-
-		return false;
+		count ++;
 	}
 
+	public boolean canMove(int x, int y) {
+		return pieces[x][y].getColor() == 0;
+	}
+
+
+	public boolean win(int x, int y) {
+
+		int reference = pieces[x][y].getColor();
+        
+	    int horizontal = 0;
+	    int vertical = 0;
+	    int diagonal = 0;
+	    int xx = x;
+	    int yy = y;
+	    
+	    //horizontal
+	    yy = y;
+	    while(yy >= 1 && pieces[x][yy-1].getColor() == reference){
+	    	horizontal ++;
+	        yy --; 
+	    }
+	    yy = y;
+	    while(yy+1 < SIZE && pieces[x][yy+1].getColor() == reference){
+	    	horizontal ++;
+	        yy ++; 
+	    }
+	    if(horizontal + 1 >= 5){
+	        return true;
+	    }
+	    
+	    //vertical
+	    xx = x;
+	    while(xx >= 1 && pieces[xx-1][y].getColor() == reference){
+	    	vertical ++;
+	        xx --; 
+	    }
+	    xx = x;
+	    while(xx+1 < SIZE && pieces[xx+1][y].getColor() == reference){
+	    	vertical ++;
+	        xx ++; 
+	    }
+	    if(vertical + 1 >= 5){
+	        return true;
+	    }
+	    
+	    //diagonal,top left to bottom right
+	    yy=y;
+	    xx=x;
+	    while(yy >= 1 && xx >= 1 && pieces[xx-1][yy-1].getColor() == reference){
+	    	diagonal ++;
+	        yy --; 
+	        xx --;
+	    }
+	    yy=y;
+	    xx=x;
+	    while(yy+1 < SIZE && xx+1 <SIZE && pieces[xx+1][yy+1].getColor() == reference){
+	    	diagonal ++;
+	        yy ++; 
+	        xx ++;
+	    }
+	    if(diagonal + 1 >= 5){
+	        return true;
+	    }
+	    
+	  //diagonal,top right to bottom left
+	    yy=y;
+	    xx=x;
+	    diagonal = 0;
+	    while(yy+1 < SIZE && xx >= 1 && pieces[xx-1][yy+1].getColor() == reference){
+	    	diagonal ++;
+	        yy ++; 
+	        xx --;
+	    }
+	    yy=y;
+	    xx=x;
+	    while(yy >= 1 && xx+1 <SIZE && pieces[xx+1][yy-1].getColor() == reference){
+	    	diagonal ++;
+	        yy ++; 
+	        xx ++;
+	    }
+	    if(diagonal + 1 >= 5){
+	        return true;
+	    }
+	    
+		return false;
+
+	}
 
 }
